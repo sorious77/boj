@@ -23,7 +23,6 @@ int main() {
 
 	findRoad();
 
-	//printf("Result : %d\n", result);
 	cout << result;
 }
 
@@ -98,7 +97,7 @@ void findRoad() {
 					for (int k = 0; k < L; k++) {
 						visit[i][j - k - 1] = true;
 					}
-					count = 1;
+					count = 1; // 더 높은 부분으로, 경사로가 놓여지지 않았기 때문에 길이가 1이 됨
 				}
 				prev = map[i][j];
 			}

@@ -65,25 +65,25 @@ void dfs(int x, int y, int count, int sum) {
 void shape(int x, int y) {
 	int sum;
 
-	if (y - 1 >= 0 && y + 1 < N && x + 1 < M) {
+	if (y - 1 >= 0 && y + 1 < N && x + 1 < M) { // ㅏ 모양
 		sum = board[y][x] + board[y - 1][x] + board[y + 1][x] + board[y][x + 1];
 		if (sum > Max)
 			Max = sum;
 	}
 
-	if (y - 1 >= 0 && x - 1 >= 0 && y + 1 < N) {
+	if (y - 1 >= 0 && x - 1 >= 0 && y + 1 < N) { // ㅓ 모양
 		sum = board[y][x] + board[y - 1][x] + board[y + 1][x] + board[y][x - 1];
 		if (sum > Max)
 			Max = sum;
 	}
 
-	if (y - 1 >= 0 && x - 1 >= 0 && x + 1 < M) {
+	if (y - 1 >= 0 && x - 1 >= 0 && x + 1 < M) { // ㅗ 모양
 		sum = board[y][x] + board[y - 1][x] + board[y][x - 1] + board[y][x + 1];
 		if (sum > Max)
 			Max = sum;
 	}
 
-	if (y + 1 < N && x - 1 >= 0 && x + 1 < M) {
+	if (y + 1 < N && x - 1 >= 0 && x + 1 < M) { // ㅜ 모양
 		sum = board[y][x] + board[y][x - 1] + board[y][x + 1] + board[y + 1][x];
 		if (sum > Max)
 			Max = sum;
