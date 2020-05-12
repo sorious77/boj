@@ -8,8 +8,4 @@
 
   [blogLink]:https://sorious77.tistory.com/category/Algorithm/백준
 
-<<<<<<< HEAD
 - 기타 질문 사항 등은 이메일(sorious77@naver.com)으로 해주시면 됩니다.
-=======
-- 기타 질문 사항 등은 이메일(sorious77@naver.com)으로 해주시면 됩니다.
->>>>>>> 8f9265b47c39c26b072bd3edb058de8ca1adf851
