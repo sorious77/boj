@@ -2,71 +2,83 @@
 #include <queue>
 #include <algorithm>
 
-#define MAX_DIST 999999999
-
 using namespace std;
 
-int main() {
-	int n, m;
+#define MAX_DIST 999999999
 
-	cin >> n >> m;
+struct compare {
+	bool operator()(pair<int, int> a, pair<int, int> b) {
+		return a.first > b.first;
+	}
+};
 
-	int** arr = new int* [n + 1];
-	int* dist = new int[n + 1];
-	bool* visit = new bool[n + 1];
 
-	for (int i = 1; i <= n; i++) {
-		arr[i] = new int[n + 1];
-		
-		for (int j = 1; j <= n; j++) {
-			arr[i][j] = MAX_DIST;
-		}
+struct Vertex {
+	int point;
+	int weight;
+	Vertex* next;
 
-		arr[i][i] = 0;
+	Vertex() {
+		point = 0;
+		weight = 0;
+		next = nullptr;
 	}
 
-	int start, end, weight;
-	for (int i = 0; i < m; i++) {
-		cin >> start >> end >> weight;
+	Vertex(int point, int weight, Vertex* next) {
+		this->point = point;
+		this->weight = weight;
+		this->next = next;
+	}
+};
 
-		arr[start][end] = weight;
+int main() {
+	int V, E;
+	int v, u, w;
+	int start, end;
+
+	cin >> V >> E;
+
+	Vertex* vertex = new Vertex[V + 1];
+
+	int dist[200001];
+	bool visit[200001] = { false, };
+
+	for (int i = 1; i <= V; i++) {
+		dist[i] = MAX_DIST;
+	}
+
+	for (int i = 0; i < E; i++) {
+		cin >> u >> v >> w;
+
+		vertex[u].next = new Vertex(v, w, vertex[u].next);
 	}
 
 	cin >> start >> end;
 
-	priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
-
-	for (int i = 1; i <= n; i++) {
-		if (i != start)
-			pq.push(make_pair(arr[start][i], i));
-
-		dist[i] = arr[start][i];
-		visit[i] = false;
-	}
-
-	visit[start] = true;
 	dist[start] = 0;
 
-	for (int i = 0; i < n - 1; i++) {
-		pair<int, int> temp;
+	priority_queue<pair<int, int>, vector<pair<int, int>>, compare> pq;
 
-		while (true) {
-			temp = pq.top();
-			pq.pop();
-			
-			if (!visit[temp.second])
-				break;
-		}
+	pq.push(make_pair(0, start));
 
-		visit[temp.second] = true;
+	while (!pq.empty()) {
+		pair<int, int> cur = pq.top();
+		pq.pop();
 
-		for (int j = 1; j <= n; j++) {
-			//if (!visit[j]) {
-				dist[j] = min(dist[j], dist[temp.second] + arr[temp.second][j]);
-				pq.push(make_pair(dist[j], j));
-			//}
+		if (visit[cur.second])
+			continue;
+
+		visit[cur.second] = true;
+
+		for (auto temp = vertex[cur.second].next; temp != nullptr; temp = temp->next) {
+			if (!visit[temp->point]) {
+				dist[temp->point] = min(dist[temp->point], dist[cur.second] + temp->weight);
+				pq.push(make_pair(dist[cur.second] + temp->weight, temp->point));
+			}
 		}
 	}
 
 	cout << dist[end];
+
+	return 0;
 }
