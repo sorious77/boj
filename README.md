@@ -4,7 +4,7 @@
 
 
 
-- C++로 작성되었으며, 코드에 대한 설명은 [블로그][blogLink]에서 확인하실 수 있습니다.
+- 코드에 대한 설명은 [블로그][blogLink]에서 확인하실 수 있습니다.
 
   [blogLink]:https://sorious77.tistory.com/category/Algorithm/백준
 
