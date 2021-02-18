@@ -3,7 +3,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-public class BJ1009 {
+public class Main {
 	static class Reader {
 		BufferedReader br;
 		StringTokenizer st;
