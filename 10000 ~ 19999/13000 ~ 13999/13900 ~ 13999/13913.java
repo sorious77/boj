@@ -1,82 +1,81 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Stack;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
-	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		StringBuilder sb = new StringBuilder();
+    static int N, K;
+    final static int MAX_POINT = 100001;
 
-		int N = Integer.parseInt(st.nextToken());
-		int M = Integer.parseInt(st.nextToken());
-		int answer = 9999999;
+    static void input() {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
 
-		int MAX_SIZE = 200001;
-		int[] dist = new int[MAX_SIZE];
-		int[] parent = new int[MAX_SIZE];
+            N = Integer.parseInt(st.nextToken());
+            K = Integer.parseInt(st.nextToken());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-		Arrays.fill(dist, 9999999);
+    static void solve() {
+        int[] move = new int[MAX_POINT];
+        int[] path = new int[MAX_POINT];
 
-		Queue<Integer> q = new LinkedList<>();
-		q.offer(N);
-		dist[N] = 0;
-		parent[N] = -1;
+        Arrays.fill(move, 9999999);
 
-		while (!q.isEmpty()) {
-			int cur = q.poll();
+        Queue<Integer> q = new LinkedList<>();
+        q.offer(N);
+        move[N] = 0;
+        path[N] = -1;
 
-			if (cur == M && answer > dist[cur]) {
-				answer = dist[cur];
-				continue;
-			}
+        while (!q.isEmpty()) {
+            int cur = q.poll();
 
-			if (dist[cur] > dist[M]) {
-				continue;
-			}
+            if (cur == K) {
+                break;
+            }
 
-			if (cur - 1 >= 0 && dist[cur - 1] > dist[cur] + 1) {
-				q.offer(cur - 1);
-				dist[cur - 1] = dist[cur] + 1;
-				parent[cur - 1] = cur;
-			}
+            if (cur - 1 >= 0 && move[cur - 1] > move[cur] + 1) {
+                move[cur - 1] = move[cur] + 1;
+                path[cur - 1] = cur;
+                q.offer(cur - 1);
+            }
 
-			if (cur + 1 < MAX_SIZE && dist[cur + 1] > dist[cur] + 1) {
-				q.offer(cur + 1);
-				dist[cur + 1] = dist[cur] + 1;
-				parent[cur + 1] = cur;
-			}
+            if (cur + 1 < MAX_POINT && move[cur + 1] > move[cur] + 1) {
+                move[cur + 1] = move[cur] + 1;
+                path[cur + 1] = cur;
+                q.offer(cur + 1);
+            }
 
-			if (cur * 2 < MAX_SIZE && dist[cur * 2] > dist[cur] + 1) {
-				q.offer(cur * 2);
-				dist[cur * 2] = dist[cur] + 1;
-				parent[cur * 2] = cur;
-			}
-		}
-		
-		sb.append(answer).append("\n");
-		
-		Stack<Integer> stk = new Stack<>();
-		stk.add(M);
-		
-		int cur = M;
-		
-		while(true) {
-			if(parent[cur] == -1)
-				break;
-			
-			stk.add(parent[cur]);
-			cur = parent[cur];
-		}
-		
-		while(!stk.isEmpty()) {
-			sb.append(stk.pop()).append(" ");
-		}
-		
-		System.out.println(sb.toString());
-	}
+            if (cur * 2 < MAX_POINT && move[cur * 2] > move[cur] + 1) {
+                move[cur * 2] = move[cur] + 1;
+                path[cur * 2] = cur;
+                q.offer(cur * 2);
+            }
+        }
+
+        System.out.println(move[K]);
+
+        int location = K;
+        StringBuilder sb = new StringBuilder();
+        Stack<Integer> st = new Stack<>();
+
+        while (location != -1) {
+            st.push(location);
+            location = path[location];
+        }
+
+        while(!st.isEmpty()) {
+            sb.append(st.pop()).append(" ");
+        }
+
+        System.out.println(sb);
+    }
+
+    public static void main(String[] args) {
+        input();
+
+        solve();
+    }
 }
+
