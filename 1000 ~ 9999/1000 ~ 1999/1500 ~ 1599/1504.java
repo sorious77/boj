@@ -1,67 +1,109 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
-	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-	static StringTokenizer st = new StringTokenizer("");
+    final static int INFINITE = 9999999;
 
-	static String next() throws Exception {
-		while (!st.hasMoreTokens()) {
-			st = new StringTokenizer(br.readLine());
-		}
-		return st.nextToken();
-	}
+    static class Pair implements Comparable<Pair> {
+        int e;
+        int w;
 
-	static int nextInt() throws Exception {
-		return Integer.parseInt(next());
-	}
+        Pair(int e, int w) {
+            this.e = e;
+            this.w = w;
+        }
 
-	static int N, E;
-	static int[][] graph;
+        @Override
+        public int compareTo(Pair p) {
+            return this.w - p.w;
+        }
+    }
 
-	public static void main(String[] args) throws Exception {
-		N = nextInt();
-		E = nextInt();
+    static int N, E;
+    static int V1, V2;
+    static int[][] graph;
 
-		graph = new int[N][N];
+    static void input() {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
 
-		int MAX_DIST = 999999;
+            N = Integer.parseInt(st.nextToken());
+            E = Integer.parseInt(st.nextToken());
 
-		for (int i = 0; i < N; i++) {
-			Arrays.fill(graph[i], MAX_DIST);
-			graph[i][i] = 0;
-		}
+            graph = new int[N + 1][N + 1];
 
-		for (int i = 0; i < E; i++) {
-			int e1 = nextInt() - 1;
-			int e2 = nextInt() - 1;
-			int w = nextInt();
+            for (int i = 1; i <= N; i++) {
+                Arrays.fill(graph[i], INFINITE);
+                graph[i][i] = 0;
+            }
 
-			graph[e1][e2] = w;
-			graph[e2][e1] = w;
-		}
+            for (int i = 0; i < E; i++) {
+                st = new StringTokenizer(br.readLine());
 
-		for (int k = 0; k < N; k++) {
-			for (int i = 0; i < N; i++) {
-				for (int j = 0; j < N; j++) {
-					graph[i][j] = Math.min(graph[i][j], graph[i][k] + graph[k][j]);
-				}
-			}
-		}
+                int s = Integer.parseInt(st.nextToken());
+                int e = Integer.parseInt(st.nextToken());
+                int w = Integer.parseInt(st.nextToken());
 
-		int v1 = nextInt() - 1;
-		int v2 = nextInt() - 1;
+                graph[s][e] = w;
+                graph[e][s] = w;
+            }
 
-		int path1 = graph[0][v1] + graph[v1][v2] + graph[v2][N - 1];
-		int path2 = graph[0][v2] + graph[v2][v1] + graph[v1][N - 1];
+            st = new StringTokenizer(br.readLine());
 
-		int answer = Math.min(path1, path2);
+            V1 = Integer.parseInt(st.nextToken());
+            V2 = Integer.parseInt(st.nextToken());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-		if (answer >= MAX_DIST)
-			answer = -1;
+    static void dijkstra(int x) {
+        // x를 기준으로 모든 정점에 대한 최단거리를 구하는 함수
 
-		System.out.println(answer);
-	}
+        PriorityQueue<Pair> pq = new PriorityQueue<>();
+
+        for (int i = 1; i <= N; i++) {
+            if (i != x) {
+                pq.offer(new Pair(i, graph[x][i]));
+            }
+        }
+
+        while (!pq.isEmpty()) {
+            Pair cur = pq.poll();
+
+            if (graph[x][cur.e] < cur.w || cur.w == INFINITE) {
+                continue;
+            }
+
+            for (int i = 1; i <= N; i++) {
+                if (graph[x][i] > cur.w + graph[cur.e][i]) {
+                    graph[x][i] = cur.w + graph[cur.e][i];
+                    graph[i][x] = cur.w + graph[cur.e][i];
+
+                    pq.offer(new Pair(i, graph[x][i]));
+                }
+            }
+        }
+    }
+
+    static void solve() {
+        dijkstra(1);
+        dijkstra(V1);
+        dijkstra(V2);
+        dijkstra(N);
+
+        int answer = Math.min(graph[1][V1] + graph[V1][V2] + graph[V2][N], graph[1][V2] + graph[V2][V1] + graph[V1][N]);
+
+        System.out.println(answer >= INFINITE ? -1 : answer);
+    }
+
+    public static void main(String[] args) {
+        input();
+
+        solve();
+    }
 }
+
